@@ -28,7 +28,7 @@ To implement an `Academic Affairs System`:
 
   - <font color=Red>**Professors**</font>
 
-    - **Register and Publish Assignment**: 1. professor can register a course; 2. professor can publish a registered course in a specific semester. 
+    - **Register and Publish Course**: 1. professor can register a course; 2. professor can publish a registered course in a specific semester. 
     - **View and Public Notifications**: 1. professor can sent notifications to his/her students; 2. professor can view notifications sent by administrator and himself/herself.
     - **Public and Evaluate Assignment**: 1. professor can publish an assignment to his/her students in this semester; 2. after the assignment deadline, professor can view all the assignments and evaluate.
     - **Publish and Evaluate Quiz and Exam**: 1. professor can publish quiz or exam to his/her students; 2. professor can submit the score after the quiz or exam.
