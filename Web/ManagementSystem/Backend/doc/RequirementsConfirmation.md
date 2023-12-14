@@ -147,11 +147,13 @@ From the perspective of the user who receive the notification:
 ## Function & Workflow Definition
 ### Course Selection 
 ![Course Selection](image/course_selection.png)
+
 Only when there is available course module and the course selection phase is created by administrator, student can select or cancel selected course. 
 Also at **usual phase**, professor can edit the course and course module and administrator can help a student to be enrolled into a course module which still doesn't meet the maximum capacity.
 
 ### Assignment, Project, Quiz or Exam
 ![Assignment, Projectm Quiz or Exam](image/assignment.png)
+
 Before the assignment/project deadline, students can submit as many times as they want but the system will only keep the last submit. Professor need to first submit and then confirm score, otherwise students won't be able to see it. Quiz/Exam is similar to assignment/project workflow but the system won't support online quiz/exam, so theoretically professors can submit score immediately after publishing quiz/exam.
 
 ### Notification
