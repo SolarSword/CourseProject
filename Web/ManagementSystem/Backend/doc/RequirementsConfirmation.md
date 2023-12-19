@@ -45,7 +45,7 @@ If a Course is just registered without publication, it is not visible to student
 | Duration | This course lasts X weeks during this semester. X is the duration. |
 | Course Capacity | The maximum number of students this course can host. |
 | Min Number of Students| Minimum number of students to start a course. |
-| Score Composition Ratio | The score composition ratio of this course. format: <u>A%xAssignment+B%xProject+C%xMidterm+D%xFinal</u>. **A**, **B** and **C** can be **0** while **D** must be greater than **30** and <u>A+B+C+D</u> must be equal to **100** |
+| Score Composition Ratio | The score composition ratio of this course. format: <u>A%xAssignment+B%xProject+C%xMidterm+D%xFinal</u>. **A**, **B** and **C** can be **0** while **D** must be no less than **30** and <u>A+B+C+D</u> must be equal to **100** |
 | Status | The status of this Course Module: **Selection In Progress, Normal Teaching, Course Ended, Canceled, Reviewing.**|
 ### User & Role
 Student, Professor or Administrator, all of them are Users of this system. The detailed field definition of a user is as this chart:

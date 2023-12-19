@@ -14,7 +14,7 @@ User Table:
 ```
 CREATE TABLE IF NOT EXISTS user_tab (
     user_id INTEGER NOT NULL PRIMARY KEY,
-    password VARCHAR(256) NOT NULL,
+    password VARCHAR(256) NOT NULL
 );
 ```
 College Table:
@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS college_tab (
 ```
 Role Table:
 student, professor and administartor have many overlapped fields so that one unified table can be used to store all of them.
+
+status: Normal, Graduated, Suspension, Retired
 ```
 CREATE TABLE IF NOT EXISTS role_tab (
     role_id VARCHAR(256) NOT NULL PRIMARY KEY,
@@ -37,8 +39,9 @@ CREATE TABLE IF NOT EXISTS role_tab (
     email VARCHAR(256),
     grade INTEGER,
     enrollment_year INTEGER,
-    FOREIGEN KEY(user_id) REFERENCES user_tab(user_id),
-    FOREIGEN KEY(college_id) REFERENCES college_tab(college_id)
+    status INTEGER,
+    FOREIGEN KEY (user_id) REFERENCES user_tab (user_id),
+    FOREIGEN KEY (college_id) REFERENCES college_tab (college_id)
 );
 ```
 Semester Table
@@ -63,6 +66,10 @@ CREATE TABLE IF NOT EXISTS course_tab (
 );
 ```
 Course Module Table
+
+The format of score_ratio is "[{"type":1, "ratio":0.1},{"type":1, "ratio":0.1}, {"type":1, "ratio":0.1}, {"type":2, "ratio":0.2}, {"type":3, "ratio":0.2}, {"type":4, "ratio":0.3}]", 1: assignment, 2: quiz or midterm exam, 3: project, 4: final exam.
+
+status: 1: Selection In Progress, 2: Normal Teaching, 3: Course Ended, 4: Canceled, 5: Reviewing.
 ```
 CREATE TABLE IF NOT EXISTS course_module_tab (
     course_module_id TEXT NOT NULL PRIMARY KEY,
@@ -75,6 +82,93 @@ CREATE TABLE IF NOT EXISTS course_module_tab (
     class_period_end VARCHAR(256),
     duration INTEGER,
     course_capacity INTEGER,
-    
+    min_stu_num INTEGER,
+    score_ratio TEXT,
+    status INTEGER,
+    FOREIGEN KEY(course_id) REFERENCES course_tab(course_id),
+    FOREIGEN KEY(professor_id) REFERENCES role_tab(role_id),
+    FOREIGEN KEY(ta_id) REFERENCES role_tab(role_id)
+);
+```
+Course Module Student Table, to store the course selection data.
+status is to mark the selection status, Selecting, Enrolled, Selection Failed, Ended, Failed.
+
+Scores: "[100, 100, 100, 80, 90, 85]"
+```
+CREATE TABLE IF NOT EXISTS course_module_stu_tab (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    course_module_id TEXT NOT NULL PRIMARY KEY,
+    course_id VARCHAR(256) NOT NULL,
+    stu_id VARCHAR(256) NOT NULL,
+    scores TEXT,
+    final_score INTEGER,
+    status INTEGER,
+    FOREIGEN KEY(course_module_id) REFERENCES course_module_tab(course_module_id),
+    FOREIGEN KEY(course_id) REFERENCES course_tab(course_id),
+    FOREIGEN KEY(stu_id) REFERENCES role_tab(role_id)
+);
+```
+Assignment/Project/Quiz/Exam Table, the published assignment table.
+Type: 1: assignment, 2:quiz, 3: project, 4: final exam. 
+```
+CREATE TABLE IF NOT EXISTS assignment_exam_tab (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    course_module_id TEXT NOT NULL PRIMARY KEY,
+    professor_id VARCHAR(256) NOT NULL,
+    type INTEGER NOT NULL, 
+    title VARCHAR(256) NOT NULL,
+    content TEXT,
+    publish_time INTEGER,
+    deadline INTEGER,
+    exam_start VARCHAR(256),
+    exam_end VARCHAR(256),
+    exam_room VARCHAR(256),
+    FOREIGEN KEY(course_module_id) REFERENCES course_module_tab(course_module_id),
+    FOREIGEN KEY(professor_id) REFERENCES role_tab(role_id)
+);
+```
+Student Assignment/Project/Quiz/Exam Table, the table to store the students' submission of assignmeny/project, this table also stores the students' scores.
+score_status: 1: Waiting, 2: Submitted, 3: Confirmed.
+```
+CREATE TABLE IF NOT EXISTS stu_assignment_tab (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    assignment_id INTEGER,
+    stu_id VARCHAR(256) NOT NULL,
+    type INTEGER,
+    last_submit_time INTEGER,
+    content TEXT,
+    score INTEGER,
+    score_status INTEGER,
+    FOREIGEN KEY(assignment_id) REFERENCES assignment_exam_tab(id)
+);
+```
+Notification Sender Table
+receiver_features: a string list, each element represent a feature.
+is_all_users, is_all_students, is_all_normal_students, is_all_professors, is_all_normal_professors, course_id, course_module_id, receiver_role_ids
+
+receiver_role_ids is also a list, like ["ST20150100126", "FA19980320082"]
+```
+CREATE TABLE IF NOT EXISTS noti_sender_tab (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    sender_id VARCHAR(256) NOT NULL,
+    title VARCHAR(256),
+    content TEXT,
+    send_time INTEGER,
+    receiver_features TEXT,
+    FOREIGEN KEY(sender_id) REFERENCES role_tab(role_id)
+);
+```
+Notification Receiver Table status: 1: Unread, 2: Have Read, 3: Deleted
+```
+CREATE TABLE IF NOT EXISTS noti_sender_tab (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    sender_id VARCHAR(256) NOT NULL,
+    title VARCHAR(256),
+    content TEXT,
+    send_time INTEGER,
+    receiver_id VARCHAR(256) NOT NULL,
+    status INTEGER,
+    FOREIGEN KEY(sender_id) REFERENCES role_tab(role_id),
+    FOREIGEN KEY(receiver_id) REFERENCES role_tab(role_id)
 );
 ```
