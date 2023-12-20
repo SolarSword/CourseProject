@@ -31,17 +31,15 @@ status: Normal, Graduated, Suspension, Retired
 ```
 CREATE TABLE IF NOT EXISTS role_tab (
     role_id VARCHAR(256) NOT NULL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    college_id VARCHAR(256) NOT NULL,
+    user_id INTEGER NOT NULL REFERENCES user_tab (user_id),
+    college_id VARCHAR(256) NOT NULL REFERENCES college_tab (college_id),
     name VARCHAR(256) NOT NULL,
     gender INTEGER,
     type INTEGER,
     email VARCHAR(256),
     grade INTEGER,
     enrollment_year INTEGER,
-    status INTEGER,
-    FOREIGEN KEY (user_id) REFERENCES user_tab (user_id),
-    FOREIGEN KEY (college_id) REFERENCES college_tab (college_id)
+    status INTEGER
 );
 ```
 Semester Table
@@ -59,10 +57,9 @@ Course Table
 CREATE TABLE IF NOT EXISTS course_tab (
     course_id VARCHAR(256) NOT NULL PRIMARY KEY,
     course_name VARCHAR(256) NOT NULL,
-    college_id VARCHAR(256) NOT NULL,
+    college_id VARCHAR(256) NOT NULL REFERENCES college_tab(college_id),
     credit INTEGER,
-    brief TEXT,
-    FOREIGEN KEY(college_id) REFERENCES college_tab(college_id)
+    brief TEXT
 );
 ```
 Course Module Table
@@ -73,9 +70,9 @@ status: 1: Selection In Progress, 2: Normal Teaching, 3: Course Ended, 4: Cancel
 ```
 CREATE TABLE IF NOT EXISTS course_module_tab (
     course_module_id TEXT NOT NULL PRIMARY KEY,
-    course_id VARCHAR(256) NOT NULL,
-    professor_id VARCHAR(256) NOT NULL,
-    ta_id VARCHAR(256),
+    course_id VARCHAR(256) NOT NULL REFERENCES course_tab(course_id),
+    professor_id VARCHAR(256) NOT NULL REFERENCES role_tab(role_id),
+    ta_id VARCHAR(256) REFERENCES role_tab(role_id),
     semester VARCHAR(256) NOT NULL,
     classroom VARCHAR(256),
     class_period_start VARCHAR(256),
@@ -84,10 +81,7 @@ CREATE TABLE IF NOT EXISTS course_module_tab (
     course_capacity INTEGER,
     min_stu_num INTEGER,
     score_ratio TEXT,
-    status INTEGER,
-    FOREIGEN KEY(course_id) REFERENCES course_tab(course_id),
-    FOREIGEN KEY(professor_id) REFERENCES role_tab(role_id),
-    FOREIGEN KEY(ta_id) REFERENCES role_tab(role_id)
+    status INTEGER
 );
 ```
 Course Module Student Table, to store the course selection data.
@@ -97,15 +91,12 @@ Scores: "[100, 100, 100, 80, 90, 85]"
 ```
 CREATE TABLE IF NOT EXISTS course_module_stu_tab (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    course_module_id TEXT NOT NULL PRIMARY KEY,
-    course_id VARCHAR(256) NOT NULL,
-    stu_id VARCHAR(256) NOT NULL,
+    course_module_id TEXT NOT NULL REFERENCES course_module_tab(course_module_id),
+    course_id VARCHAR(256) NOT NULL REFERENCES course_tab(course_id),
+    stu_id VARCHAR(256) NOT NULL REFERENCES role_tab(role_id),
     scores TEXT,
     final_score INTEGER,
-    status INTEGER,
-    FOREIGEN KEY(course_module_id) REFERENCES course_module_tab(course_module_id),
-    FOREIGEN KEY(course_id) REFERENCES course_tab(course_id),
-    FOREIGEN KEY(stu_id) REFERENCES role_tab(role_id)
+    status INTEGER
 );
 ```
 Assignment/Project/Quiz/Exam Table, the published assignment table.
@@ -113,8 +104,8 @@ Type: 1: assignment, 2:quiz, 3: project, 4: final exam.
 ```
 CREATE TABLE IF NOT EXISTS assignment_exam_tab (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    course_module_id TEXT NOT NULL PRIMARY KEY,
-    professor_id VARCHAR(256) NOT NULL,
+    course_module_id TEXT NOT NULL REFERENCES course_module_tab(course_module_id),
+    professor_id VARCHAR(256) NOT NULL REFERENCES role_tab(role_id),
     type INTEGER NOT NULL, 
     title VARCHAR(256) NOT NULL,
     content TEXT,
@@ -122,9 +113,7 @@ CREATE TABLE IF NOT EXISTS assignment_exam_tab (
     deadline INTEGER,
     exam_start VARCHAR(256),
     exam_end VARCHAR(256),
-    exam_room VARCHAR(256),
-    FOREIGEN KEY(course_module_id) REFERENCES course_module_tab(course_module_id),
-    FOREIGEN KEY(professor_id) REFERENCES role_tab(role_id)
+    exam_room VARCHAR(256)
 );
 ```
 Student Assignment/Project/Quiz/Exam Table, the table to store the students' submission of assignmeny/project, this table also stores the students' scores.
@@ -132,14 +121,13 @@ score_status: 1: Waiting, 2: Submitted, 3: Confirmed.
 ```
 CREATE TABLE IF NOT EXISTS stu_assignment_tab (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    assignment_id INTEGER,
+    assignment_id INTEGER NOT NULL REFERENCES assignment_exam_tab(id),
     stu_id VARCHAR(256) NOT NULL,
     type INTEGER,
     last_submit_time INTEGER,
     content TEXT,
     score INTEGER,
-    score_status INTEGER,
-    FOREIGEN KEY(assignment_id) REFERENCES assignment_exam_tab(id)
+    score_status INTEGER
 );
 ```
 Notification Sender Table
@@ -150,25 +138,26 @@ receiver_role_ids is also a list, like ["ST20150100126", "FA19980320082"]
 ```
 CREATE TABLE IF NOT EXISTS noti_sender_tab (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    sender_id VARCHAR(256) NOT NULL,
+    sender_id VARCHAR(256) NOT NULL REFERENCES role_tab(role_id),
     title VARCHAR(256),
     content TEXT,
     send_time INTEGER,
-    receiver_features TEXT,
-    FOREIGEN KEY(sender_id) REFERENCES role_tab(role_id)
+    receiver_features TEXT
 );
 ```
 Notification Receiver Table status: 1: Unread, 2: Have Read, 3: Deleted
 ```
 CREATE TABLE IF NOT EXISTS noti_sender_tab (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    sender_id VARCHAR(256) NOT NULL,
+    sender_id VARCHAR(256) NOT NULL REFERENCES role_tab(role_id),
     title VARCHAR(256),
     content TEXT,
     send_time INTEGER,
-    receiver_id VARCHAR(256) NOT NULL,
-    status INTEGER,
-    FOREIGEN KEY(sender_id) REFERENCES role_tab(role_id),
-    FOREIGEN KEY(receiver_id) REFERENCES role_tab(role_id)
+    receiver_id VARCHAR(256) NOT NULL REFERENCES role_tab(role_id),
+    status INTEGER
 );
 ```
+Above all are the database tables used in this project, the overall ER chart is
+![ER Chart](image/system_database_er.png)
+
+# Workflow
