@@ -86,7 +86,7 @@ For different roles, on the basis of User fields, each will have different field
 ### Semester
 Semester is a time period, starting from a Monday and ending on a Sunday. All the Course Module duration must fall within a Semester. Only the administrator can create or edit a Semester. 
 
-Semester has 2 type: **Semester** and **Short Semester**. Semester must have at least 16 lecture weeks while Short Semester can have 2 to 6 lecture weeks.
+Semester has 2 type: **Semester** and **Short Semester**. Semester must have at least 16 lecture weeks but 20 weeks at most while Short Semester can have 2 to 6 lecture weeks.
 
 ### Notification
 Notification is the message sent to other users. Only professor and administrator can send messages. Professor can send notificatons to all the students who take the corresponding course in the current semester while administrator can send notifications to student and professor. Once a user received a notification, he/she can read it or delete it.

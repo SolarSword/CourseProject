@@ -9,6 +9,8 @@ The Management Service is main component of this system. Considering the project
 
 <mark>**Highlight**: In actual projects, course selection is a very complex process and it is a typical high-concurrency scenario in a short period of time. To solve this, not only the optimization of code logic level, but also the introduction of new middleware components, deployment of service instances and many other aspects will be taken into consideration. However, these contents are not the focus of this project, so the architectural design has been extremely simplified.</mark>
 
+By right, there should be Authentication conponent as the requirement document mentioned different permissions for different roles. But considering the project complexity, this part won't be introduced. I will put it in a separated project instead.
+
 # Database Table Design
 User Table:
 ```
@@ -160,4 +162,77 @@ CREATE TABLE IF NOT EXISTS noti_sender_tab (
 Above all are the database tables used in this project, the overall ER chart is
 ![ER Chart](image/system_database_er.png)
 
-# Workflow
+(Usually, there should be a sequence chart to illustrate the workflow, but this project is quite simple and does not involve interaction between multiple systems, the sqquence chart is not)
+
+# API Design
+
+## Semester Related
+| API URL | Method |
+|:---|:---|
+| /api/v1/create_semester | POST |
+
+To create a new semester, it will check the role permission in the request body. (**Note**: This is not a reasonable approach, but as mentioned earlier, in order to simplify the project complexity. All permission checks after this are the same.)
+
+Request Body
+```
+{
+    "role_id": , // a string, the role id of the semester creator
+    "semester": , // a string, format follows the requirement in requirement document
+    "start_time": , // an integer timestamp, must be a Monday. But the API won't check it, it should be FE to limit user to select Monday only and convert to a timestamp. It must be later than the end_time of the last semester.
+    "end_time": , // an integer, for normal semester, the time duration must be within 16-20 weeks while short semester must be within 2-6 weeks
+    "type": // an integer, 1: normal semester, 2: short semester
+}
+```
+
+Response Body
+```
+{
+    "error_code": // an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/get_current_semester | GET |
+
+Request
+```
+{}
+```
+Response
+```
+{
+    
+}
+```
+
+## Course Related
+| API URL | Method |
+|:---|:---|
+| /api/v1/create_course | POST |
+
+To create a course. A college couldn't create 2 courses with the same name.
+
+Request
+```
+{
+    "course_name": , // a string
+    "college_id": , // a string
+    "credit": , // an integer
+    "brief": , // a string 
+}
+```
+
+Response Body
+```
+{
+    "course_id": // if the course is successfully created, return the course_id, otherwise return null
+    "error_code": // an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/create_course_module | POST |
