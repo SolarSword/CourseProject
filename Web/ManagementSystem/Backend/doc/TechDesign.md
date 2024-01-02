@@ -9,7 +9,7 @@ The Management Service is main component of this system. Considering the project
 
 <mark>**Highlight**: In actual projects, course selection is a very complex process and it is a typical high-concurrency scenario in a short period of time. To solve this, not only the optimization of code logic level, but also the introduction of new middleware components, deployment of service instances and many other aspects will be taken into consideration. However, these contents are not the focus of this project, so the architectural design has been extremely simplified.</mark>
 
-By right, there should be Authentication conponent as the requirement document mentioned different permissions for different roles. But considering the project complexity, this part won't be introduced. I will put it in a separated project instead.
+By right, there should be Authentication conponent as the requirement document mentioned different permissions for different roles. But considering the project complexity, this part won't be introduced. I will put it in a separated project instead. <mark>So in this project, all the permission check will be very naive and straightforward.</mark>
 
 # Database Table Design
 User Table:
@@ -203,7 +203,12 @@ Request
 Response
 ```
 {
-    
+    "semester": , 
+    "start_time": , 
+    "end_time": , 
+    "type": ,
+    "error_code": // an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
 }
 ```
 
@@ -221,18 +226,170 @@ Request
     "college_id": , // a string
     "credit": , // an integer
     "brief": , // a string 
+    "creator_role_id": // the creator id, to do permission check
 }
 ```
 
 Response Body
 ```
 {
-    "course_id": // if the course is successfully created, return the course_id, otherwise return null
-    "error_code": // an integer, it would be null if no error 
+    "course_id": ,// if the course is successfully created, return the course_id, otherwise return null
+    "error_code": ,// an integer, it would be null if no error 
     "error_message": // a string, it would be null if no error
 }
 ```
 ---
 | API URL | Method |
 |:---|:---|
+| /api/v1/get_course?offset=0&limit=10&college_id=001&course_id=CS40045 | GET |
+
+`offset`, `limit`, `college_id` and `course_id` are path parameters. So this API supports pagination and filtering based on college_id and course_id. *All of them can be empty. If any of them is empty, it would be treated as default value.* 
+
+(The following APIs with path parameters will only list the parameters in the table.)
+
+Path Parameters
+| Parameter | Type | Default Value |
+| :---: | :---: | :---: |
+| offset | int | 0 |
+| limit | int | 10 |
+| college_id | string | null |
+| course_id | string | null |
+
+Response Body
+```
+{
+    "course_list": [
+        {
+            "course_id": ,
+            "course_name": ,
+            "college_id": ,
+            "credit": ,
+            "brief": 
+        },
+        {
+            "course_id": ,
+            "course_name": ,
+            "college_id": ,
+            "credit": ,
+            "brief": 
+        }
+    ]
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/edit_course | POST |
+
+To edit a course. 
+
+Request
+```
+{
+    "course_id": , // the course id to be edited, can't be empty
+    "course_name": , // a string
+    "college_id": , // a string
+    "credit": , // an integer
+    "brief": , // a string 
+    "creator_role_id": // the creator id, to do permission check
+}
+```
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+
+# Course Module Related
+| API URL | Method |
+|:---|:---|
 | /api/v1/create_course_module | POST |
+
+To create a course module based on an existing course. 
+
+Request Body
+```
+{
+    "course_id": ,
+    "creator_role_id": , // the role id of the creator, can't be empty
+    "professor_id": ,// the professor role id of this course module, can't be empty
+    "ta_id": ,// the role id of the TA of this course module, can be empty
+    "semester": , //can't be empty
+    "class_room": ,// string
+    "class_period_start": ,// string, the API will check the format
+    "class_period_end": ,// string, the API will check the format
+    "duration": , //integer, 
+    "course_capacity": , //integer, can't be empty
+    "min_stu_num": , //integer, can't be empty
+    "score_ratio": // string, can't be empty, the API will check the format, like [{"type":1, "ratio":0.1},{"type":1, "ratio":0.1}, {"type":1, "ratio":0.1}, {"type":2, "ratio":0.2}, {"type":3, "ratio":0.2}, {"type":4, "ratio":0.3}]
+}
+```
+Response Body
+```
+{
+    "course_module_id": // if the course module is successfully created, return the course_id, otherwise return null
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/get_course_module | GET |
+
+Path Parameter
+| Parameter | Type | Default Value |
+| :---: | :---: | :---: |
+| offset | int | 0 |
+| limit | int | 10 |
+| college_id | string | null |
+| course_id | string | null |
+| course_module_id | string | null |
+| professor_id | string | null |
+| semester | string | {current semester} |
+| class_period_start | string | null |
+| class_period_end | string | null |
+
+Response Body
+```
+{
+    "course_id": ,
+    "course_module_id": ,
+    "professor_id": ,// the professor role id of this course module, can't be empty
+    "ta_id": ,// the role id of the TA of this course module, can be empty
+    "semester": , //can't be empty
+    "class_room": ,// string
+    "class_period_start": ,// string, the API will check the format
+    "class_period_end": ,// string, the API will check the format
+    "duration": , //integer, 
+    "course_capacity": , //integer, can't be empty
+    "min_stu_num": , //integer, can't be empty
+    "score_ratio": , // string, can't be empty, the API will check the format, like [{"type":1, "ratio":0.1},{"type":1, "ratio":0.1}, {"type":1, "ratio":0.1}, {"type":2, "ratio":0.2}, {"type":3, "ratio":0.2}, {"type":4, "ratio":0.3}]
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/delete_course_module | DELETE |
+to delete a course module. 
+
+Request Body
+```
+{
+    "course_module_id": ,// can't be empty; if the id is not existing or imvalid, the API will return error.
+    "role_id": // the deleter role id, can't be empty
+}
+```
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
