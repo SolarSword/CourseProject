@@ -196,11 +196,13 @@ Response Body
 |:---|:---|
 | /api/v1/get_current_semester | GET |
 
-Request
+Request Body
 ```
-{}
+{
+    "role_id": //can't be empty
+}
 ```
-Response
+Response Body
 ```
 {
     "semester": , 
@@ -254,6 +256,13 @@ Path Parameters
 | limit | int | 10 |
 | college_id | string | null |
 | course_id | string | null |
+
+Request Body
+```
+{
+    "role_id": //can't be empty
+}
+```
 
 Response Body
 ```
@@ -339,6 +348,36 @@ Response Body
 ---
 | API URL | Method |
 |:---|:---|
+| /api/v1/edit_course_module | GET |
+
+To edit an existing course module.
+Request Body
+```
+{
+    "course_module_id": , //can't be empty
+    "editor_role_id": , // the role id of the creator, can't be empty
+    "professor_id": ,// the professor role id of this course module, can't be empty
+    "ta_id": ,// the role id of the TA of this course module, can be empty
+    "semester": , //can't be empty
+    "class_room": ,// string
+    "class_period_start": ,// string, the API will check the format
+    "class_period_end": ,// string, the API will check the format
+    "duration": , //integer, 
+    "course_capacity": , //integer, can't be empty
+    "min_stu_num": , //integer, can't be empty
+    "score_ratio": // string, can't be empty, the API will check the format, like [{"type":1, "ratio":0.1},{"type":1, "ratio":0.1}, {"type":1, "ratio":0.1}, {"type":2, "ratio":0.2}, {"type":3, "ratio":0.2}, {"type":4, "ratio":0.3}]
+}
+```
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
 | /api/v1/get_course_module | GET |
 
 Path Parameter
@@ -353,6 +392,13 @@ Path Parameter
 | semester | string | {current semester} |
 | class_period_start | string | null |
 | class_period_end | string | null |
+
+Request Body
+```
+{
+    "role_id": //can't be empty
+}
+```
 
 Response Body
 ```
@@ -377,6 +423,7 @@ Response Body
 | API URL | Method |
 |:---|:---|
 | /api/v1/delete_course_module | DELETE |
+
 to delete a course module. 
 
 Request Body
@@ -384,6 +431,28 @@ Request Body
 {
     "course_module_id": ,// can't be empty; if the id is not existing or imvalid, the API will return error.
     "role_id": // the deleter role id, can't be empty
+}
+```
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/select_course_module | POST |
+
+to select a course module during course selection phase
+
+Request Body
+```
+{
+    "role_id": ,// can't be empty, this field is used for permission check
+    "course_module_id": ,// can't be empty
+    "stu_id": ,// can't be empty
 }
 ```
 Response Body
