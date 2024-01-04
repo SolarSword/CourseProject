@@ -462,3 +462,88 @@ Response Body
     "error_message": // a string, it would be null if no error
 }
 ```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/drop_course_module | POST |
+
+to drop a selected course module
+
+Request Body
+```
+{
+    "role_id": ,// can't be empty, this field is used for permission check
+    "course_module_id": ,// can't be empty
+    "stu_id": ,// can't be empty
+}
+```
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/get_selected_course_module | GET |
+
+to get all the selected course module. A student can only get his/her selected course modules.
+
+Path Parameter
+| Parameter | Type | Default Value |
+| :---: | :---: | :---: |
+| offset | int | 0 |
+| limit | int | 10 |
+| college_id | string | null |
+| course_id | string | null |
+| course_module_id | string | null |
+| professor_id | string | null |
+| semester | string | {current semester} |
+| class_period_start | string | null |
+| class_period_end | string | null |
+
+Request Body
+```
+{
+    "role_id": ,//can't be empty
+    "stu_id": //can't be empty
+}
+```
+
+Response Body
+```
+{
+    "course_module": [
+        {
+            "course_id": ,
+            "course_module_id": ,
+            "professor_id": ,// the professor role id of this course module, can't be empty
+            "ta_id": ,// the role id of the TA of this course module, can be empty
+            "semester": ,
+            "class_room": ,
+            "class_period_start": ,
+            "class_period_end": ,
+            "duration": ,  
+            "course_capacity": , 
+            "min_stu_num": , 
+            "score_ratio": , 
+            "scores": ,
+            "final_score": ,
+            "status"
+        }
+    ]
+    
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+
+# Assignment Related
+| API URL | Method |
+|:---|:---|
+| /api/v1/publish_assignment | POST |
+
+to publish assignment, project, quiz, exam
+
