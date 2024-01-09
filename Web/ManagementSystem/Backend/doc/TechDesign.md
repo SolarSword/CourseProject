@@ -545,5 +545,73 @@ Response Body
 |:---|:---|
 | /api/v1/publish_assignment | POST |
 
-to publish assignment, project, quiz, exam
+to publish assignment, project, quiz, exam, using type to distinguish them.
 
+Request Body
+```
+{
+    "role_id": ,//can't be empty, used for permission check
+    "professor_id": ,//can't be empty
+    "course_module_id": ,//can't be empty
+    "type": ,//can't be empty 
+    "title": ,
+    "content": ,
+    "deadline": ,// a timestamp
+    "exam_start": ,// a string, the API will check the format 
+    "exam_end": ,// a string, the API will check the format 
+    "exam_room": 
+}
+```
+Response Body
+```
+{
+
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/edit_assignment | POST |
+
+to edit assignment, project, quiz, exam. 
+
+```
+{
+    "role_id": ,//can't be empty, used for permission check
+    "professor_id": ,//can't be empty
+    "course_module_id": ,//can't be empty
+    "type": ,//can't be empty 
+    "title": ,
+    "content": ,
+    "deadline": ,// a timestamp
+    "exam_start": ,// a string, the API will check the format 
+    "exam_end": ,// a string, the API will check the format 
+    "exam_room": 
+}
+```
+Response Body
+```
+{
+    "id": ,// the assignment id, if the assignment is published successfully, the API will return it.
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/submit_assignment | POST |
+
+to submit an assignment or project.
+
+Request Body
+```
+{
+    "assignment_id": ,// can't be empty
+    "role_id": ,// can't be empty, used for permission checking
+    "stu_id": ,// can't be empty
+    
+}
+```
