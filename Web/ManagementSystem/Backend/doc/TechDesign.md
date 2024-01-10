@@ -313,7 +313,7 @@ Response Body
 }
 ```
 
-# Course Module Related
+## Course Module Related
 | API URL | Method |
 |:---|:---|
 | /api/v1/create_course_module | POST |
@@ -540,7 +540,7 @@ Response Body
 }
 ```
 
-# Assignment Related
+## Assignment Related
 | API URL | Method |
 |:---|:---|
 | /api/v1/publish_assignment | POST |
@@ -612,6 +612,107 @@ Request Body
     "assignment_id": ,// can't be empty
     "role_id": ,// can't be empty, used for permission checking
     "stu_id": ,// can't be empty
-    
+    "type": ,
+    "content": // can't be empty
 }
 ```
+
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/get_submitted_assignment | GET |
+
+to get the submitted assignments
+
+Path Parameter
+| Parameter | Type | Default Value |
+| :---: | :---: | :---: |
+| offset | int | 0 |
+| limit | int | 10 |
+| course_id | string | null |
+| course_module_id | string | null |
+| stu_id | string | null |
+| assignment_id | int | no default value, can't be null |
+| semester | string | {current semester} |
+
+Request Body
+```
+{
+    "role_id": ,//can't be empty
+}
+```
+
+Request Body
+```
+{
+    "submitted": [
+        {
+            "stu_assignment_id": ,
+            "course_id": ,
+            "course_module_id": ,
+            "semester": ,
+            "type": ,
+            "last_submit_time": ,
+            "content": ,
+            "score": ,
+            "score_status": 
+        },
+    ],
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/submit_score | POST |
+
+to submit a score of an assignment/project/quiz/exam, before confirming, the score can be submitted many times
+
+Request Body
+```
+{
+    "role_id": ,// can't be empty
+    "stu_assignment_id": ,// can't be empty
+    "score": // can't be empty
+}
+```
+
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/confirm_score | POST |
+
+to confirm a submited score
+
+Request Body
+```
+{
+    "role_id": ,// can't be empty
+    "stu_assignment_id": ,// can't be empty
+}
+```
+
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+## Noti Related
+ 
