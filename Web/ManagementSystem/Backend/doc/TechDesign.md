@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS noti_sender_tab (
 ```
 Notification Receiver Table status: 1: Unread, 2: Have Read, 3: Deleted
 ```
-CREATE TABLE IF NOT EXISTS noti_sender_tab (
+CREATE TABLE IF NOT EXISTS noti_receiver_tab (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     sender_id VARCHAR(256) NOT NULL REFERENCES role_tab(role_id),
     title VARCHAR(256),
@@ -715,4 +715,205 @@ Response Body
 }
 ```
 ## Noti Related
- 
+| API URL | Method |
+|:---|:---|
+| /api/v1/send_noti | POST | 
+
+to send a noti
+
+Request Body
+```
+{
+    "sender_id": ,// the role id of the sender, can't be empty
+    "title": ,// if the content is empty then it can't be empty 
+    "content": ,// if the title is empty then it can't be empty
+    "receiver_feature": // a string, 8 items separated by semicolons: "1;0;0;0;0;0;0;0;[]"; the logical relationship between items would be viewed as "OR". For the first 5 items, 0 means no while 1 means yes. For 6th and 7th, 0 means not to use this feature while specific id means to use this feature. For the last item, [] means not to use it while valid role id list means to use this feature. 
+}
+```
+
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/get_sent_noti | GET |
+
+to get all the noti sent by himself/herself.
+
+Path Parameter
+| Parameter | Type | Default Value |
+| :---: | :---: | :---: |
+| offset | int | 0 |
+| limit | int | 10 |
+| send_time_start | int | null |
+| send_time_end | int | null |
+| key_word | string | null | 
+
+`send_time_start` and `send_time_end` forms a time range of send time to filter all the sent noti in this period. `key_word` is used to filter the noti whose title or content contains such key word.
+
+Request Body
+```
+{
+    "role_id": // can't be empty
+}
+```
+
+Response Body
+```
+{
+    "noti": [
+        {
+            "title": ,
+            "content": ,
+            "receiver_feature": ,
+            "send_time":
+        },
+    ],
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/get_received_noti | GET |
+
+to get all the received noti
+
+Path Parameter
+| Parameter | Type | Default Value |
+| :---: | :---: | :---: |
+| offset | int | 0 |
+| limit | int | 10 |
+| send_time_start | int | null |
+| send_time_end | int | null |
+| key_word | string | null |
+| status | int | null |
+
+Request Body
+```
+{
+    "role_id": // can't be empty
+}
+```
+
+Response Body
+```
+{
+    "noti": [
+        {
+            "id": ,
+            "title": ,
+            "content": ,
+            "receiver_feature": ,
+            "send_time": ,
+            "status": 
+        },
+    ],
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/delete_noti | DELETE |
+
+Request Body
+```
+{
+    "role_id": // can't be empty
+    "ids": [] // a list of received noti id, can't be empty or []
+}
+```
+
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+## Phase Related
+| API URL | Method |
+|:---|:---|
+| /api/v1/start_course_selection | POST |
+
+to start a course selection phase.
+
+Request Body
+```
+{
+    "role_id": ,// can't be empty
+    "end_time": // an integer timestamp; the course selection phase would be ended by the cron job after this time
+}
+```
+
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/end_course_selection | POST |
+
+to forcely end the course selection phase; if the current phase is not a course selection phase, it will return error.
+
+Request Body
+```
+{
+    "role_id": ,// can't be empty
+}
+```
+
+Response Body
+```
+{
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+---
+| API URL | Method |
+|:---|:---|
+| /api/v1/get_phase | GET |
+
+To get the current phase. No permission checking.
+
+Response Body
+```
+{
+    "type": ,
+    "error_code": ,// an integer, it would be null if no error 
+    "error_message": // a string, it would be null if no error
+}
+```
+# Global Variable
+Considering that the current semester and the phase info would be frequently used for varification, singleton is an ideal data structure for them.
+
+current semester:
+```
+{
+    "type": ,
+    "semester": ,
+    "start_time": ,
+    "end_time": 
+}
+```
+
+phase:
+```
+{
+    "type": ,
+    "end_time":
+}
+```
