@@ -892,7 +892,7 @@ To get the current phase. No permission checking.
 Response Body
 ```
 {
-    "type": ,
+    "type": ,// 0 means normal phase, 1 means course selection phase
     "error_code": ,// an integer, it would be null if no error 
     "error_message": // a string, it would be null if no error
 }
@@ -902,18 +902,18 @@ Considering that the current semester and the phase info would be frequently use
 
 current semester:
 ```
-{
-    "type": ,
-    "semester": ,
-    "start_time": ,
-    "end_time": 
+type CurrentSemester struct{
+    semesterType int
+    semester string
+    startTime int64
+    endTime int64
 }
 ```
 
 phase:
 ```
-{
-    "type": ,
-    "end_time":
+type CurrentPhase struct{
+    phaseType int
+    endTime int64
 }
 ```

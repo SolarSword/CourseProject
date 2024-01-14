@@ -24,7 +24,7 @@ func InitConfig() error {
 		log.Fatalf("get error: %v when loading config file: %s \n", err, configPath)
 		return err
 	}
-	err = yaml.Unmarshal(configFile, Cfg)
+	err = yaml.Unmarshal(configFile, &Cfg)
 	if err != nil {
 		log.Fatalf("get error: %v when unmarshalling config file: %s \n", err, configPath)
 		return err
