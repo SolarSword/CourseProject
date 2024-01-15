@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -42,10 +43,10 @@ func main() {
 	initDB()
 	defer DB.Db.CloseDB()
 
+	gin.DefaultWriter = io.MultiWriter(os.Stdout)
 	router := gin.Default()
 	register(router)
-	router.Use(logger.RequestLogger())
-	router.Use(logger.ResponseLogger())
+	router.Use(logger.Logger)
 
 	srv := &http.Server{
 		Addr:    ":8080",

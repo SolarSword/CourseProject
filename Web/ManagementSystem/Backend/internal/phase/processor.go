@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	m "course.project/management_system/internal/common/model"
 	"course.project/management_system/internal/role"
 )
 
@@ -42,17 +43,27 @@ func GetCurrentPhase() *CurrentPhase {
 // /api/v1/start_course_selection
 func StartCourseSelectionPhase(c *gin.Context) {
 	var req StartCourseSelectionPhaseRequest
-	if c.ShouldBind(&req) != nil {
+	err := c.ShouldBind(&req)
+	if err != nil {
 		c.JSON(http.StatusOK, StartCourseSelectionPhaseResponse{
-			ErrorCode:    REQUEST_BODY_ERROR,
-			ErrorMessage: REQUEST_BODY_ERROR_MSG,
+			ErrorCode:    m.REQUEST_BODY_ERROR,
+			ErrorMessage: m.REQUEST_BODY_ERROR_MSG,
 		})
+		return
+	}
+	if req.RoleID == "" || req.EndTime == 0 {
+		c.JSON(http.StatusOK, StartCourseSelectionPhaseResponse{
+			ErrorCode:    m.COMPULSORY_FIELD_MISSING,
+			ErrorMessage: m.COMPULSORY_FIELD_MISSING_MSG,
+		})
+		return
 	}
 	if !role.IsAdmin(req.RoleID) {
 		c.JSON(http.StatusOK, StartCourseSelectionPhaseResponse{
-			ErrorCode:    PERMISSON_ERROR,
-			ErrorMessage: PERMISSON_ERROR_MSG,
+			ErrorCode:    m.PERMISSON_ERROR,
+			ErrorMessage: m.PERMISSON_ERROR_MSG,
 		})
+		return
 	}
 
 	// to make sure the singleton was created
@@ -61,6 +72,10 @@ func StartCourseSelectionPhase(c *gin.Context) {
 	defer lock.Unlock()
 	phaseSingleton.phaseType = COURSE_SELECTION_PHASE
 	phaseSingleton.endTime = req.EndTime
+	c.JSON(http.StatusOK, StartCourseSelectionPhaseResponse{
+		ErrorCode:    0,
+		ErrorMessage: "",
+	})
 }
 
 // /api/v1/end_course_selection
