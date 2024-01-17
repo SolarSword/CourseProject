@@ -893,6 +893,7 @@ Response Body
 ```
 {
     "type": ,// 0 means normal phase, 1 means course selection phase
+    "end_time": ,
     "error_code": ,// an integer, it would be null if no error 
     "error_message": // a string, it would be null if no error
 }

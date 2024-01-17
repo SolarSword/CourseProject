@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	INFO  = "info"
-	WARN  = "warning"
-	FATAL = "fatal"
+	INFO  = "INFO"
+	WARN  = "WARN"
+	ERROR = "ERROR"
 )
 
 type CustomResponseWriter struct {
@@ -39,12 +39,12 @@ func Logger(c *gin.Context) {
 	if len(reqBody) > 0 {
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(reqBody))
 	}
-	fmt.Printf("[%s] Request: %s %s %s\n", INFO, c.Request.Method, c.Request.RequestURI, reqBody)
+	fmt.Printf("[%s]|%s|%s|Request: %s\n", INFO, c.Request.Method, c.Request.RequestURI, reqBody)
 
 	c.Next()
 
 	end := time.Now()
 	latency := end.Sub(start)
-	respBody := string(crw.body.Bytes())
-	fmt.Printf("[%s] Response: %s %s %s (%v)\n", INFO, c.Request.Method, c.Request.RequestURI, respBody, latency)
+	respBody := crw.body.String()
+	fmt.Printf("[%s]|%s|%s|Response: %s|(%v)\n", INFO, c.Request.Method, c.Request.RequestURI, respBody, latency)
 }

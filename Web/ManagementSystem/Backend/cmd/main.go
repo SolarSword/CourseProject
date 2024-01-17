@@ -22,6 +22,8 @@ import (
 func register(r *gin.Engine) {
 	// phase
 	r.POST("/api/v1/start_course_selection", phase.StartCourseSelectionPhase)
+	r.POST("/api/v1/end_course_selection", phase.EndCourseSelection)
+	r.GET("/api/v1/get_phase", phase.GetPhase)
 }
 
 func initDB() {
@@ -45,8 +47,9 @@ func main() {
 
 	gin.DefaultWriter = io.MultiWriter(os.Stdout)
 	router := gin.Default()
-	register(router)
+	// the middleware setting should be before the API register
 	router.Use(logger.Logger)
+	register(router)
 
 	srv := &http.Server{
 		Addr:    ":8080",
