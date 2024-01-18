@@ -84,10 +84,7 @@ func StartCourseSelectionPhase(c *gin.Context) {
 	}
 
 	ChangePhase(COURSE_SELECTION_PHASE, req.EndTime)
-	c.JSON(http.StatusOK, StartCourseSelectionPhaseResponse{
-		ErrorCode:    0,
-		ErrorMessage: "",
-	})
+	c.JSON(http.StatusOK, StartCourseSelectionPhaseResponse{})
 	log.Printf("[%s]|Phase Singleton: type: %d, end_time: %d", logger.INFO, GetCurrentPhase().phaseType, GetCurrentPhase().endTime)
 }
 
@@ -126,10 +123,7 @@ func EndCourseSelection(c *gin.Context) {
 	}
 
 	ChangePhase(NORMAL_PHASE, 0)
-	c.JSON(http.StatusOK, StartCourseSelectionPhaseResponse{
-		ErrorCode:    0,
-		ErrorMessage: "",
-	})
+	c.JSON(http.StatusOK, StartCourseSelectionPhaseResponse{})
 	log.Printf("[%s]|Phase Singleton: type: %d, end_time: %d", logger.INFO, GetCurrentPhase().phaseType, GetCurrentPhase().endTime)
 }
 
@@ -137,7 +131,7 @@ func EndCourseSelection(c *gin.Context) {
 func GetPhase(c *gin.Context) {
 	phase := GetCurrentPhase()
 	c.JSON(http.StatusOK, GetPhaseResponse{
-		phaseType: phase.phaseType,
-		endTime:   phase.endTime,
+		PhaseType: phase.phaseType,
+		EndTime:   phase.endTime,
 	})
 }

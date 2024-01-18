@@ -27,9 +27,13 @@ CREATE TABLE IF NOT EXISTS college_tab (
 );
 ```
 Role Table:
-student, professor and administartor have many overlapped fields so that one unified table can be used to store all of them.
+student, professor and administartor have many overlapped fields so that one unified table can be used to store all of them. 
 
-status: Normal, Graduated, Suspension, Retired
+Student = 1, Professor = 2, Administrator = 3. 
+
+male = 1, female = 2. Freshman = 1, Sophomore = 2, Junior = 3, Senior = 4, 0 is used for professor or administrator. 
+
+status: Normal = 1, Graduated = 2, Suspension = 3, Retired = 4
 ```
 CREATE TABLE IF NOT EXISTS role_tab (
     role_id VARCHAR(256) NOT NULL PRIMARY KEY,

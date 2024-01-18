@@ -28,6 +28,6 @@ type EndCourseSelectionResponse struct {
 }
 
 type GetPhaseResponse struct {
-	phaseType int   `json:"type"`
-	endTime   int64 `json:"end_time"`
+	PhaseType int   `json:"type"`
+	EndTime   int64 `json:"end_time"`
 }

@@ -25,3 +25,9 @@ type Role struct {
 func (Role) TableName() string {
 	return "role_tab"
 }
+
+const (
+	STUDENT   = 1
+	PROFESSOR = 2
+	ADMIN     = 3
+)

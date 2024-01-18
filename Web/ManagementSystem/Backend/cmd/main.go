@@ -17,6 +17,7 @@ import (
 	DB "course.project/management_system/internal/common/db"
 	"course.project/management_system/internal/common/logger"
 	"course.project/management_system/internal/phase"
+	"course.project/management_system/internal/semester"
 )
 
 func register(r *gin.Engine) {
@@ -24,6 +25,8 @@ func register(r *gin.Engine) {
 	r.POST("/api/v1/start_course_selection", phase.StartCourseSelectionPhase)
 	r.POST("/api/v1/end_course_selection", phase.EndCourseSelection)
 	r.GET("/api/v1/get_phase", phase.GetPhase)
+	// semester
+	r.POST("/api/v1/create_semester", semester.CreateSemester)
 }
 
 func initDB() {
