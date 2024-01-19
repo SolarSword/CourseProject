@@ -184,7 +184,7 @@ Request Body
     "semester": , // a string, format follows the requirement in requirement document
     "start_time": , // an integer timestamp, must be a Monday. But the API won't check it, it should be FE to limit user to select Monday only and convert to a timestamp. It must be later than the end_time of the last semester.
     "end_time": , // an integer, for normal semester, the time duration must be within 16-20 weeks while short semester must be within 2-6 weeks
-    "type": // an integer, 1: normal semester, 2: short semester
+    "type": // an integer, 1: normal semester, 2: short semester, 0: vacation
 }
 ```
 
@@ -200,12 +200,6 @@ Response Body
 |:---|:---|
 | /api/v1/get_current_semester | GET |
 
-Request Body
-```
-{
-    "role_id": //can't be empty
-}
-```
 Response Body
 ```
 {

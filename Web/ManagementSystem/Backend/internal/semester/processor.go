@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -74,7 +75,9 @@ func CreateSemester(c *gin.Context) {
 			ErrorCode:    m.DB_ERROR,
 			ErrorMessage: m.DB_ERROR_MSG,
 		})
+		return
 	}
+	UpdateCurrentSemester(req.Semester, req.StartTime, req.EndTime, req.Type)
 	c.JSON(http.StatusOK, CreateSemesterResponse{})
 }
 
@@ -125,8 +128,78 @@ func semesterFormatCheck(semester string, semesterType int) bool {
 
 func duplicateSemesterCheck(semester string) bool {
 	semesterFetched := dao.GetSemester(semester)
-	if len(semesterFetched.Semester) != 0 {
-		return false
+	return len(semesterFetched.Semester) == 0
+}
+
+type CurrentSemester struct {
+	semester     string
+	startTime    int64
+	endTime      int64
+	semesterType int
+}
+
+func (s CurrentSemester) GetSemester() string {
+	return s.semester
+}
+
+func (s CurrentSemester) GetStartTime() int64 {
+	return s.startTime
+}
+
+func (s CurrentSemester) GetEndTime() int64 {
+	return s.endTime
+}
+
+func (s CurrentSemester) GetSemesterType() int {
+	return s.semesterType
+}
+
+var semesterSingleton *CurrentSemester
+var lock = &sync.Mutex{}
+
+func GetSemesterSingleton() *CurrentSemester {
+	lock.Lock()
+	defer lock.Unlock()
+	// by default, the current semester would be vacation
+	if semesterSingleton == nil {
+		semesterSingleton = &CurrentSemester{
+			semesterType: dao.VACATION,
+		}
+	} else if semesterSingleton.endTime > 0 &&
+		semesterSingleton.endTime <= time.Now().Unix() {
+		semesterSingleton.semester = ""
+		semesterSingleton.startTime = 0
+		semesterSingleton.endTime = 0
+		semesterSingleton.semesterType = 0
 	}
-	return true
+	return semesterSingleton
+}
+
+func UpdateCurrentSemester(semester string, startTime, endTime int64, semesterType int) {
+	lock.Lock()
+	defer lock.Unlock()
+	if semesterSingleton == nil {
+		semesterSingleton = &CurrentSemester{
+			semester:     semester,
+			startTime:    startTime,
+			endTime:      endTime,
+			semesterType: semesterType,
+		}
+	} else {
+		semesterSingleton.semester = semester
+		semesterSingleton.startTime = startTime
+		semesterSingleton.endTime = endTime
+		semesterSingleton.semesterType = semesterType
+	}
+}
+
+// /api/v1/get_current_semester
+func GetCurrentSemester(c *gin.Context) {
+	se := GetSemesterSingleton()
+	c.JSON(http.StatusOK, GetCurrentSemesterResponse{
+		Semester:  se.semester,
+		StartTime: se.startTime,
+		EndTime:   se.endTime,
+		Type:      se.semesterType,
+	})
 }

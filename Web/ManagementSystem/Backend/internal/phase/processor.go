@@ -23,6 +23,14 @@ type CurrentPhase struct {
 	endTime   int64
 }
 
+func (p CurrentPhase) GetPhaseType() int {
+	return p.phaseType
+}
+
+func (p CurrentPhase) GetEndTime() int64 {
+	return p.endTime
+}
+
 var phaseSingleton *CurrentPhase
 var lock = &sync.Mutex{}
 

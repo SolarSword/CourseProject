@@ -13,6 +13,7 @@ func (Semester) TableName() string {
 }
 
 const (
+	VACATION       = 0
 	SEMESTER       = 1
 	SHORT_SEMESTER = 2
 )

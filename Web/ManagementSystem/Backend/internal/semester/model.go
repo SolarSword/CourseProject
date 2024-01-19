@@ -37,3 +37,12 @@ const (
 	SHORT_SEMESTER_MIN_HOURS = DAY_HOURS * WEEK_DAYS * SHORT_SEMESTER_MIN
 	SHORT_SEMESTER_MAX_HOURS = DAY_HOURS * WEEK_DAYS * SHORT_SEMESTER_MAX
 )
+
+type GetCurrentSemesterResponse struct {
+	Semester     string `json:"semester"`
+	StartTime    int64  `json:"start_time"`
+	EndTime      int64  `json:"end_time"`
+	Type         int    `json:"type"`
+	ErrorCode    int    `json:"error_code"`
+	ErrorMessage string `json:"error_message"`
+}

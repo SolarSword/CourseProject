@@ -27,6 +27,7 @@ func register(r *gin.Engine) {
 	r.GET("/api/v1/get_phase", phase.GetPhase)
 	// semester
 	r.POST("/api/v1/create_semester", semester.CreateSemester)
+	r.GET("/api/v1/get_current_semester", semester.GetCurrentSemester)
 }
 
 func initDB() {
