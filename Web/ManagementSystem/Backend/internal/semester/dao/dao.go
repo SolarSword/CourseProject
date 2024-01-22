@@ -9,7 +9,7 @@ import (
 
 func GetSemester(semester string) *Semester {
 	se := &Semester{}
-	DB.Db.GetDB().Where(&Semester{Semester: semester}).First(&se)
+	DB.Db.GetDB().Where(&Semester{Semester: semester}).Limit(1).Find(&se)
 	return se
 }
 

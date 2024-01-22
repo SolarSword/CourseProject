@@ -241,19 +241,20 @@ Response Body
 ---
 | API URL | Method |
 |:---|:---|
-| /api/v1/get_course?offset=0&limit=10&college_id=001&course_id=CS40045 | GET |
+| /api/v1/get_course?offset=0&limit=10&college_id=001&course_id=CS40045 | POST |
 
-`offset`, `limit`, `college_id` and `course_id` are path parameters. So this API supports pagination and filtering based on college_id and course_id. *All of them can be empty. If any of them is empty, it would be treated as default value.* 
+`offset`, `limit`, `college_id` and `course_id` are Query String Parameters. So this API supports pagination and filtering based on college_id and course_id. *All of them can be empty. If any of them is empty, it would be treated as default value.* 
 
-(The following APIs with path parameters will only list the parameters in the table.)
+(The following APIs with Query String Parameters will only list the parameters in the table.)
 
-Path Parameters
+Query String Parameters
 | Parameter | Type | Default Value |
 | :---: | :---: | :---: |
 | offset | int | 0 |
 | limit | int | 10 |
 | college_id | string | null |
 | course_id | string | null |
+| course_name | string | null |
 
 Request Body
 ```
@@ -301,6 +302,7 @@ Request
     "credit": , // an integer
     "brief": , // a string 
     "creator_role_id": // the creator id, to do permission check
+    "recommended_year": // an integer
 }
 ```
 Response Body
@@ -378,7 +380,7 @@ Response Body
 |:---|:---|
 | /api/v1/get_course_module | GET |
 
-Path Parameter
+Query String Parameter
 | Parameter | Type | Default Value |
 | :---: | :---: | :---: |
 | offset | int | 0 |
@@ -489,7 +491,7 @@ Response Body
 
 to get all the selected course module. A student can only get his/her selected course modules.
 
-Path Parameter
+Query String Parameter
 | Parameter | Type | Default Value |
 | :---: | :---: | :---: |
 | offset | int | 0 |
@@ -629,7 +631,7 @@ Response Body
 
 to get the submitted assignments
 
-Path Parameter
+Query String Parameter
 | Parameter | Type | Default Value |
 | :---: | :---: | :---: |
 | offset | int | 0 |
@@ -743,7 +745,7 @@ Response Body
 
 to get all the noti sent by himself/herself.
 
-Path Parameter
+Query String Parameter
 | Parameter | Type | Default Value |
 | :---: | :---: | :---: |
 | offset | int | 0 |
@@ -783,7 +785,7 @@ Response Body
 
 to get all the received noti
 
-Path Parameter
+Query String Parameter
 | Parameter | Type | Default Value |
 | :---: | :---: | :---: |
 | offset | int | 0 |

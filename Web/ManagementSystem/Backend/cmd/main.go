@@ -16,6 +16,7 @@ import (
 	cfg "course.project/management_system/config"
 	DB "course.project/management_system/internal/common/db"
 	"course.project/management_system/internal/common/logger"
+	"course.project/management_system/internal/course"
 	"course.project/management_system/internal/phase"
 	"course.project/management_system/internal/semester"
 )
@@ -28,6 +29,9 @@ func register(r *gin.Engine) {
 	// semester
 	r.POST("/api/v1/create_semester", semester.CreateSemester)
 	r.GET("/api/v1/get_current_semester", semester.GetCurrentSemester)
+	// course
+	r.POST("/api/v1/create_course", course.CreateCourse)
+	r.POST("/api/v1/get_course", course.GetCourse)
 }
 
 func initDB() {
