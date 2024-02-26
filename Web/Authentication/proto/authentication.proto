@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option go_package = "course.project/authentication";
+
+
+service Authentication {
+    rpc Login(UserInfo) returns (LoginStatus) {}
+    rpc Logout(LoginToken) returns (LoginStatus) {}
+}
+
+message UserInfo {
+    int32 user_account = 1;
+    string encoded_password = 2;
+}
+
+message LoginStatus {
+    int32 status = 1;
+    LoginToken login_token = 2;
+}
+
+message LoginToken {
+    string token = 1;
+}

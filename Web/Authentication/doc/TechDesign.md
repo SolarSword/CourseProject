@@ -127,3 +127,18 @@ Response Body
 |:---|:---|
 | /api/v1/delete_product | DELETE |
 
+Request Body
+```
+{
+    "product_id": , //compulsory
+}
+```
+Response Body
+```
+{
+    "error": {
+        "error_code": ,
+        "error_msg": 
+    }
+}
+```
