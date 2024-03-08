@@ -53,15 +53,14 @@ func (c *authenticationClient) Logout(ctx context.Context, in *LoginToken, opts 
 }
 
 // AuthenticationServer is the server API for Authentication service.
-// All implementations must embed UnimplementedAuthenticationServer
+// All implementations should embed UnimplementedAuthenticationServer
 // for forward compatibility
 type AuthenticationServer interface {
 	Login(context.Context, *UserInfo) (*LoginStatus, error)
 	Logout(context.Context, *LoginToken) (*LoginStatus, error)
-	mustEmbedUnimplementedAuthenticationServer()
 }
 
-// UnimplementedAuthenticationServer must be embedded to have forward compatible implementations.
+// UnimplementedAuthenticationServer should be embedded to have forward compatible implementations.
 type UnimplementedAuthenticationServer struct {
 }
 
@@ -71,7 +70,6 @@ func (UnimplementedAuthenticationServer) Login(context.Context, *UserInfo) (*Log
 func (UnimplementedAuthenticationServer) Logout(context.Context, *LoginToken) (*LoginStatus, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
 }
-func (UnimplementedAuthenticationServer) mustEmbedUnimplementedAuthenticationServer() {}
 
 // UnsafeAuthenticationServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to AuthenticationServer will

@@ -1,0 +1,9 @@
+database:
+  driver: "sqlite3"
+  path: "../sqlite/authentication.db" 
+
+cache:
+  driver: "redis"
+  addr: "localhost:6379"
+  password: ""
+  DB: 0

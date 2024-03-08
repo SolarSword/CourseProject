@@ -2,6 +2,13 @@ syntax = "proto3";
 
 option go_package = "course.project/authentication";
 
+message Constant {
+    enum Status {
+        NORMAL = 0;
+        FAILED = 1;
+        ONLINE = 2;
+    }
+}
 
 service Authentication {
     rpc Login(UserInfo) returns (LoginStatus) {}
@@ -9,7 +16,7 @@ service Authentication {
 }
 
 message UserInfo {
-    int32 user_account = 1;
+    string user_name = 1;
     string encoded_password = 2;
 }
 
