@@ -10,9 +10,11 @@ import (
 	"log"
 	"time"
 
+	"github.com/golang-jwt/jwt"
+
+	cache "course.project/authentication/internal/common/cache"
 	dao "course.project/authentication/internal/dao"
 	pb "course.project/authentication/proto"
-	"github.com/golang-jwt/jwt"
 )
 
 var aeskey = []byte("8fvh9cok87bjefgh")
@@ -31,7 +33,36 @@ func (a *AuthenticationServerImpl) Login(ctx context.Context, userInfo *pb.UserI
 			Status: int32(pb.Constant_FAILED),
 		}, nil
 	}
-
+	cacheToken, err := cache.Ca.Get(ctx, userInfo.UserName)
+	if err != nil {
+		return nil, err
+	}
+	if len(cacheToken) > 0 {
+		return &pb.LoginStatus{
+			Status: int32(pb.Constant_ONLINE),
+			LoginToken: &pb.LoginToken{
+				Token: cacheToken,
+			},
+		}, nil
+	}
+	token, err := createToken(userInfo.UserName)
+	if err != nil {
+		return &pb.LoginStatus{
+			Status: int32(pb.Constant_FAILED),
+		}, err
+	}
+	err = cache.Ca.Set(ctx, userInfo.UserName, token, time.Minute*30)
+	if err != nil {
+		return &pb.LoginStatus{
+			Status: int32(pb.Constant_FAILED),
+		}, err
+	}
+	return &pb.LoginStatus{
+		Status: int32(pb.Constant_NORMAL),
+		LoginToken: &pb.LoginToken{
+			Token: token,
+		},
+	}, nil
 }
 
 func passwordDecode(encoded string) (string, error) {
@@ -100,21 +131,27 @@ func aesEncrypt(origData, key []byte) ([]byte, error) {
 	return crypted, nil
 }
 
+// TBD
 func createToken(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"username": username,
-			"exp":      time.Now().Add(time.Hour * 1).Unix(),
+			"exp":      time.Now().Add(time.Minute * 30).Unix(),
 		})
 
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
+		log.Fatalf("login token creating error: %v\n", err)
 		return "", err
 	}
 
 	return tokenString, nil
 }
 
-func (a *AuthenticationServerImpl) Logout(ctx context.Context, userInfo *pb.LoginToken) (*pb.LoginStatus, error) {
+func (a *AuthenticationServerImpl) Logout(ctx context.Context, loginToken *pb.LoginToken) (*pb.LoginStatus, error) {
 
+}
+
+func parseToken(tokenString string) error {
+	token, err := jwt.ParseWithClaims(tokenString)
 }
