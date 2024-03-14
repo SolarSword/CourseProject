@@ -131,14 +131,19 @@ func aesEncrypt(origData, key []byte) ([]byte, error) {
 	return crypted, nil
 }
 
-// TBD
-func createToken(username string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
-		jwt.MapClaims{
-			"username": username,
-			"exp":      time.Now().Add(time.Minute * 30).Unix(),
-		})
+type UserJWT struct {
+	Username string
+	jwt.MapClaims
+}
 
+func createToken(username string) (string, error) {
+	claims := UserJWT{
+		username,
+		jwt.MapClaims{
+			"exp": time.Now().Add(time.Hour * 24).Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		log.Fatalf("login token creating error: %v\n", err)
@@ -149,9 +154,25 @@ func createToken(username string) (string, error) {
 }
 
 func (a *AuthenticationServerImpl) Logout(ctx context.Context, loginToken *pb.LoginToken) (*pb.LoginStatus, error) {
-
+	username, err := parseToken(loginToken.Token)
+	if err != nil {
+		return nil, err
+	}
+	cache.Ca.Del(ctx, username)
+	return &pb.LoginStatus{
+		Status: int32(pb.Constant_NORMAL),
+	}, nil
 }
 
-func parseToken(tokenString string) error {
-	token, err := jwt.ParseWithClaims(tokenString)
+func parseToken(tokenString string) (string, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &UserJWT{},
+		func(token *jwt.Token) (interface{}, error) {
+			return jwtKey, nil
+		})
+	if err != nil {
+		log.Fatalf("login token parse error: %v\n", err)
+		return "", err
+	}
+	claims, _ := token.Claims.(*UserJWT)
+	return claims.Username, nil
 }
