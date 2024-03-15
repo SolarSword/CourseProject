@@ -44,13 +44,15 @@ CREATE TABLE IF NOT EXISTS product_tab (
 Request Body
 ```
 {
-    "product_name": , // compulsory
-    "shop_id": , // compulsory
-    "price": , // compulsory
-    "stock": , // compulsory
-    "sold": , // compulsory
-    "status": , // compulsory
-    "description": 
+    "product": {
+        "product_name": , // compulsory
+        "shop_id": , // compulsory
+        "price": , // compulsory
+        "stock": , // compulsory
+        "sold": , // compulsory
+        "status": , // compulsory
+        "description": 
+    }
 }
 ```
 
@@ -103,14 +105,16 @@ Response Body
 Request Body
 ```
 {
-    "product_id": , // compulsory
-    "product_name": , // compulsory
-    "shop_id": , // compulsory
-    "price": , // compulsory
-    "stock": , // compulsory
-    "sold": , // compulsory
-    "status": , // compulsory
-    "description": 
+    "product": {
+        "product_id": , // compulsory
+        "product_name": , // compulsory
+        "shop_id": , // compulsory
+        "price": , // compulsory
+        "stock": , // compulsory
+        "sold": , // compulsory
+        "status": , // compulsory
+        "description": 
+    }
 }
 ```
 Response Body

@@ -1,4 +1,4 @@
-package internal
+package login
 
 import (
 	"bytes"
@@ -23,7 +23,11 @@ var jwtKey = []byte("9vjs9ifed")
 
 type AuthenticationServerImpl struct{}
 
-func (a *AuthenticationServerImpl) Login(ctx context.Context, userInfo *pb.UserInfo) (*pb.LoginStatus, error) {
+func NewServer() AuthenticationServerImpl {
+	return AuthenticationServerImpl{}
+}
+
+func (a AuthenticationServerImpl) Login(ctx context.Context, userInfo *pb.UserInfo) (*pb.LoginStatus, error) {
 	decoded, err := passwordDecode(userInfo.EncodedPassword)
 	if err != nil {
 		return nil, err
@@ -153,7 +157,7 @@ func createToken(username string) (string, error) {
 	return tokenString, nil
 }
 
-func (a *AuthenticationServerImpl) Logout(ctx context.Context, loginToken *pb.LoginToken) (*pb.LoginStatus, error) {
+func (a AuthenticationServerImpl) Logout(ctx context.Context, loginToken *pb.LoginToken) (*pb.LoginStatus, error) {
 	username, err := parseToken(loginToken.Token)
 	if err != nil {
 		return nil, err
