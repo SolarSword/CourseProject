@@ -11,7 +11,7 @@ import (
 	cache "course.project/authentication/internal/common/cache"
 	DB "course.project/authentication/internal/common/db"
 	"course.project/authentication/internal/processor/login"
-	pb "course.project/authentication/proto"
+	pb "course.project/authentication/proto/authentication"
 )
 
 const (

@@ -14,7 +14,7 @@ import (
 
 	cache "course.project/authentication/internal/common/cache"
 	dao "course.project/authentication/internal/dao"
-	pb "course.project/authentication/proto"
+	pb "course.project/authentication/proto/authentication"
 )
 
 var aeskey = []byte("8fvh9cok87bjefgh")

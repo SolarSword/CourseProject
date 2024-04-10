@@ -11,15 +11,15 @@ func (User) TableName() string {
 }
 
 type Product struct {
-	Id          int `gorm:"primaryKey"`
-	ProductId   int
+	Id          int64 `gorm:"primaryKey"`
+	ProductId   int64
 	ProductName string
-	ShopId      int
-	Price       int
-	Stock       int
-	Sold        int
-	Status      int
-	Description int
+	ShopId      int64
+	Price       int32
+	Stock       int32
+	Sold        int32
+	Status      int32
+	Description string
 }
 
 func (Product) TableName() string {

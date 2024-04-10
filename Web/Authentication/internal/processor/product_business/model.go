@@ -8,10 +8,10 @@ type Product struct {
 	ProductId   int64  `json:"product_id"`
 	ProductName string `json:"product_name"`
 	ShopId      int64  `json:"shop_id"`
-	Price       int64  `json:"price"`
-	Stock       int    `json:"stock"`
-	Sold        int    `json:"sold"`
-	Status      int    `json:"status"`
+	Price       int32  `json:"price"`
+	Stock       int32  `json:"stock"`
+	Sold        int32  `json:"sold"`
+	Status      int32  `json:"status"`
 	Description string `json:"description"`
 }
 
